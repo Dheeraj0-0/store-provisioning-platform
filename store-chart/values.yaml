@@ -1,0 +1,16 @@
+db:
+  name: wordpress
+  rootPassword: admin123
+
+storage:
+  size: 1Gi
+
+wordpress:
+  image: wordpress:latest
+
+mysql:
+  image: mysql:8.0
+
+ingress:
+  enabled: true
+  host: store.local
