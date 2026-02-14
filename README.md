@@ -41,5 +41,22 @@ Each store runs in its own namespace with:
 
 ### 1. Start Kubernetes
 
-```bash
+'''
+bash
 minikube start
+
+### 2. Start Backend
+'''
+cd backend
+python -m uvicorn main:app --reload
+
+Runs at:
+http://127.0.0.1:8000
+
+3. Start Dashboard
+cd dashboard
+npm install
+npm start
+
+Runs at:
+http://localhost:3000
