@@ -3,3 +3,5 @@ node_modules/
 pycache/
 *.pyc
 .vscode/
+# DevContext - AI coding context
+.devctx/
