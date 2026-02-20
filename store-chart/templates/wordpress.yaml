@@ -3,6 +3,7 @@ kind: Deployment
 metadata:
   name: wordpress
 spec:
+  replicas: 1
   selector:
     matchLabels:
       app: wordpress
@@ -11,11 +12,9 @@ spec:
       labels:
         app: wordpress
     spec:
-
-      # ✅ Wait for MySQL before starting WordPress
       initContainers:
         - name: wait-for-db
-          image: busybox
+          image: busybox:1.36
           command:
             - sh
             - -c
@@ -24,7 +23,6 @@ spec:
                 echo "Waiting for database...";
                 sleep 5;
               done
-
       containers:
         - name: wordpress
           image: {{ .Values.wordpress.image }}
@@ -43,15 +41,30 @@ spec:
                 secretKeyRef:
                   name: mysql-secret
                   key: MYSQL_DATABASE
-
-            # ✅ Cloud-native URL handling
             - name: WORDPRESS_CONFIG_EXTRA
               value: |
                 define('WP_HOME', 'http://' . $_SERVER['HTTP_HOST']);
                 define('WP_SITEURL', 'http://' . $_SERVER['HTTP_HOST']);
-
           ports:
             - containerPort: 80
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 20
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 6
+          livenessProbe:
+            httpGet:
+              path: /wp-login.php
+              port: 80
+            initialDelaySeconds: 60
+            periodSeconds: 20
+            timeoutSeconds: 3
+            failureThreshold: 6
+          resources:
+{{ toYaml .Values.wordpress.resources | indent 12 }}
 ---
 apiVersion: v1
 kind: Service
@@ -62,3 +75,4 @@ spec:
     app: wordpress
   ports:
     - port: 80
+      targetPort: 80
