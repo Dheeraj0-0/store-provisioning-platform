@@ -3,31 +3,29 @@ db:
   rootPassword: ""
 
 storage:
-  size: 5Gi
+  size: 20Gi
 
 wordpress:
   image: wordpress:6.5-apache
-  adminUser: admin
-  adminPassword: ""
   resources:
     requests:
-      cpu: 100m
-      memory: 256Mi
-    limits:
-      cpu: 500m
+      cpu: 250m
       memory: 512Mi
+    limits:
+      cpu: "1"
+      memory: 1Gi
 
 mysql:
   image: mysql:8.0
   resources:
     requests:
-      cpu: 100m
-      memory: 256Mi
+      cpu: 250m
+      memory: 512Mi
     limits:
-      cpu: 500m
-      memory: 1Gi
+      cpu: "1"
+      memory: 2Gi
 
 ingress:
   enabled: true
   className: nginx
-  host: store.localtest.me
+  host: store.example.com

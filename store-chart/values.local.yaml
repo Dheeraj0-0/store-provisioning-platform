@@ -1,0 +1,17 @@
+db:
+  name: wordpress
+  rootPassword: local-dev-password-change-me
+
+storage:
+  size: 2Gi
+
+wordpress:
+  image: wordpress:6.5-apache
+
+mysql:
+  image: mysql:8.0
+
+ingress:
+  enabled: true
+  className: nginx
+  host: store.localtest.me

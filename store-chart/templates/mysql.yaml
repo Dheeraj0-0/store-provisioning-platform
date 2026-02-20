@@ -3,6 +3,7 @@ kind: Deployment
 metadata:
   name: mysql
 spec:
+  replicas: 1
   selector:
     matchLabels:
       app: mysql
@@ -27,6 +28,20 @@ spec:
                   key: MYSQL_DATABASE
           ports:
             - containerPort: 3306
+          readinessProbe:
+            tcpSocket:
+              port: 3306
+            initialDelaySeconds: 20
+            periodSeconds: 10
+            timeoutSeconds: 3
+          livenessProbe:
+            tcpSocket:
+              port: 3306
+            initialDelaySeconds: 45
+            periodSeconds: 20
+            timeoutSeconds: 3
+          resources:
+{{ toYaml .Values.mysql.resources | indent 12 }}
           volumeMounts:
             - name: mysql-storage
               mountPath: /var/lib/mysql
@@ -44,3 +59,4 @@ spec:
     app: mysql
   ports:
     - port: 3306
+      targetPort: 3306
